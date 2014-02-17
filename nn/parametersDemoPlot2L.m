@@ -1,7 +1,8 @@
+addpath('common')
 %% TWO HIDDEN LAYERS
 %clear
 %load('nn2L_10-50,10-50'), numTests = 10000;
-load('nn2L_10-100,10-60')
+load('results/nn2L_10-100,10-60')
 
 
 figure(5)

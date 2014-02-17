@@ -1,3 +1,5 @@
+% Obsolete as of 2014-01-05
+
 function num_net = cnnnumgradcheck_siamese(net, x1, x2, y, L_funvL)
     epsilon = 1e-4;
     er      = 1e-8;
@@ -7,7 +9,7 @@ function num_net = cnnnumgradcheck_siamese(net, x1, x2, y, L_funvL)
     
     numProgressSteps = 11;
     
-    fprintf('   numgrad: ffb |')
+    fprintf('   numgrad: ffb\n')
     for j = 1 : numel(net.ffb)
         net_m = net; net_p = net;
         net_p.ffb(j) = net_m.ffb(j) + epsilon;
@@ -36,22 +38,12 @@ function num_net = cnnnumgradcheck_siamese(net, x1, x2, y, L_funvL)
             error('ffb numerical gradient checking failed');
         end
         %}
-        if find(j == round(linspace(1,numel(net.ffb),numProgressSteps)))
-            fprintf('-')
-        end
     end
-
-    fprintf('|\n')
-    fprintf('   numgrad: ffW |')
+    
+    fprintf('   numgrad: ffW\n')
     
     for i = 1 : size(net.ffW, 1)
-        if (isempty(find(i == round(linspace(1,size(net.ffW, 1),numProgressSteps)), 1)) && i ~= 1)
-            fprintf('\n                 ')
-        end
         for u = 1 : size(net.ffW, 2)
-            if find(u == round(linspace(1,size(net.ffW, 2),numProgressSteps)))
-                fprintf('.')
-            end           
             net_m = net; net_p = net;
             net_p.ffW(i, u) = net_m.ffW(i, u) + epsilon;
             net_m.ffW(i, u) = net_m.ffW(i, u) - epsilon;
@@ -84,15 +76,11 @@ function num_net = cnnnumgradcheck_siamese(net, x1, x2, y, L_funvL)
         end
     end
 
-    fprintf('|\n')
-    fprintf('   numgrad: layers |')
+    fprintf('   numgrad: layers\n')
     
     for l = n : -1 : 2
         if strcmp(net.layers{l}.type, 'c')
             for j = 1 : numel(net.layers{l}.a)
-                if (isempty(find(j == round(linspace(1,numel(net.layers{l}.a),numProgressSteps)), 1)) && j ~= 1)
-                    fprintf('\n                    ')
-                end
                 net_m = net; net_p = net;
                 net_p.layers{l}.b{j} = net_m.layers{l}.b{j} + epsilon;
                 net_m.layers{l}.b{j} = net_m.layers{l}.b{j} - epsilon;
@@ -154,9 +142,6 @@ function num_net = cnnnumgradcheck_siamese(net, x1, x2, y, L_funvL)
                             num_net.layers{l}.dk{i}{j}(u, v) = d;
                         end
                     end
-                    if find(i == round(linspace(1,numel(net.layers{l - 1}.a),numProgressSteps)))
-                        fprintf('.')
-                    end 
                 end
             end
         elseif strcmp(net.layers{l}.type, 's')
@@ -174,6 +159,5 @@ function num_net = cnnnumgradcheck_siamese(net, x1, x2, y, L_funvL)
 %            end
         end
     end
-    fprintf('|\n')
 %    keyboard
 end

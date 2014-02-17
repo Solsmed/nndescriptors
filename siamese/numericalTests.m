@@ -1,3 +1,7 @@
+% Snippets for numerically checking gradients.
+% Obsolete as of 2014-01-05 when the annoying misspelled-variable bug was
+% eliminated.
+
 %%{
 % epsilon = 1e-7;
 

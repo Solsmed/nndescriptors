@@ -1,4 +1,17 @@
 function [threshold, truePos, trueNeg, falsePos, falseNeg] = testSiamese(nn, dist, t_x1, t_x2, t_t)
+% Returns some metrics that describe a network's performance.
+%   INPUT:
+%       nn - the network to be tested
+%       dist - the distance metric to be used for outputs in the joining
+%              stage. A function.
+%       t_x1, t_x2 - inputs for each half of the network
+%       t_t - target values for each pair
+%
+%   OUTPUT:
+%       threshold - point there likelihood for match/no match is equal.
+%       truePos, trueNeg, falsePos, falseNeg - rates for TP/TN/FP/FN
+%
+% Function also plots this data (approximates error rates as gaussians)
 
 numTests = size(t_t, 1);
 %tests = testSet(1:numTests);

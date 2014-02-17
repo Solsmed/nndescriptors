@@ -1,9 +1,16 @@
-clear
-path = '/Volumes/Solar Flare/liberty/';
-%datasetPath = 'liberty/';
+% This script first loads some data and can plot examples of that data
+% Then comes the initialiser for the joining part of the siamese network
+% Then comes the code for the body of the network. There are two versions,
+% one implementing using MLP, the other using CNN.
 
+clear
+path = '..[path to dataset]../liberty/';
+
+% loadData can be used to generate data (fast), load liberty sets from
+% files (slow), or load previously loaded liberty sets (fast)
 [ patchList, patchSize, patchesLeft, patchesRight, patchesSimilarity ] = ...
-    loadData('load',-1,'m50_10000_10000_0.mat');
+    loadData('generate2D',1000,path,64);%loadData('load',-1,'m50_10000_10000_0.mat');
+    % TEMPLATES TO COPY TO THE ABOVE LINE:
     %loadData('load',-1,'saveName');
     %loadData('liberty',10000,path);
     %loadData('generate2D',1000,path,32);
@@ -49,7 +56,7 @@ addpath('../DeepLearnToolbox/NN')
 addpath('../DeepLearnToolbox/CNN')
 
 numOutputs = 128;
-numTrainingExamples = 9000;
+numTrainingExamples = 800;
 batchSize = 10;
 numBatches = floor(numTrainingExamples / batchSize);
 numEpochs = 1;
@@ -282,10 +289,10 @@ cnn.layers = {
     struct('type', 'c', 'outputmaps', 10, 'kernelsize', 7) %convolution layer   7  64->58
     struct('type', 's', 'scale', 2) %sub sampling layer                            58->29
     struct('type', 'c', 'outputmaps', 30, 'kernelsize', 6) %convolution layer   5  29->24
-    struct('type', 's', 'scale', 2) %subsampling layer                            24->12
+    struct('type', 's', 'scale', 3) %subsampling layer                            24->12
     struct('type', 'c', 'outputmaps', 80, 'kernelsize', 5) %convolution layer   5 12->8
     struct('type', 's', 'scale', 2) %subsampling layer                             8->4  
-    struct('type', 'c', 'outputmaps', 300, 'kernelsize', 4) %convolution layer  4  4->1
+    %struct('type', 'c', 'outputmaps', 300, 'kernelsize', 4) %convolution layer  4  4->1
     %struct('type', 'c', 'outputmaps', 200, 'kernelsize', 3) %convolution layer   5 12->8
 };
 

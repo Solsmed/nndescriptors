@@ -1,14 +1,25 @@
+addpath('DeepLearnToolbox/util')
+addpath('DeepLearnToolbox/NN')
+addpath('common')
+
+%
+% Generates data to be displayed by parametersDemoPlot1L (one-layer) or
+% parametersDemoPlot2L (two-layers). Any new run will save data as
+% nn_new.mat. Existing results are found in the results folder.
+%
+
 clc
 clear
-addpath('../DeepLearnToolbox/util')
-addpath('../DeepLearnToolbox/NN')
 
-load('../DeepLearnToolbox/data/mnist_uint8.mat')
+load('DeepLearnToolbox/data/mnist_uint8.mat')
 x = double(train_x);
 y = double(train_y);
 tx = double(test_x);
 ty = double(test_y);
 
+%
+% nc is the architectures to be tested
+%
 nc = {[1 2 3 4 5 6 7 8 9 10 15 20 25 30 35 40 45 50 55 60 70 80 90 100]};
 nc = {[10 20 30 40 50 60 70 80 90 100];
       [10 20 30 40 50 60]};
@@ -34,8 +45,7 @@ numInputs = size(x,2);
 hist_A = nan(numOutputs^2, numIters, numStats, numArchs);
 hist_iterTime = nan(numIters, numStats, numArchs);
 %hist_nn = cell(numStats, numArchs);
-%%
-load nn_new.mat % will be missing 1.10.x
+
 %%
 archTimes = nan(numArchs, 1);
 tic

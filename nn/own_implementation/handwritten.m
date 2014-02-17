@@ -1,9 +1,15 @@
+%
+% Some toying around with MNIST and other small test data
+%
+addpath('nn/own_implementation')
+
 clc; clear
-load('../DeepLearnToolbox/data/mnist_uint8.mat')
+
+load('DeepLearnToolbox/data/mnist_uint8.mat')
 original_data_x = double(train_x);
 original_data_y = double(train_y);
 
-%% Fives
+%% Only fives in MNIST
 yesses = 10;
 noes = 10;
 
@@ -20,17 +26,9 @@ not_fives_y = original_data_y(not_fives(1:noes),6);
 data_x = [fives_x; not_fives_x];
 data_y = [fives_y; not_fives_y];
 
-%% 1000
+%% 1000 first examples in MNIST
 data_x = original_data_x(1:1000,:);
 data_y = original_data_y(1:1000,:);
-
-%% Handmade
-data_x = [1 0 1 0 0 0 0 0;
-          1 1 0 1 0 0 0 0;
-          1 1 0 0 1 1 1 1]';
-      
-data_y =  [0 0 0 0 1 1 1 1;
-           1 1 0 1 0 0 0 0]';
 
 %% Resize input
 m = 5;
@@ -53,6 +51,14 @@ title(method{m})
 colormap(gray(256))
 
 data_x = data_x_small;
+
+%% Handmade examples (not MNIST at all)
+data_x = [1 0 1 0 0 0 0 0;
+          1 1 0 1 0 0 0 0;
+          1 1 0 0 1 1 1 1]';
+      
+data_y =  [0 0 0 0 1 1 1 1;
+           1 1 0 1 0 0 0 0]';
 
 %% Train network
 
@@ -78,4 +84,4 @@ tester = data_x(20,:);
 %[~, i] = max(neuralFeedForward(nn,tester));
 %digit = i - 1
 fprintf('%.1f%% fiver\n',100*neuralFeedForward(nn,tester))
-image(reshape(tester,[28 28])')
+image(reshape(tester,sqrt(size(data_x,2))*[1 1])')

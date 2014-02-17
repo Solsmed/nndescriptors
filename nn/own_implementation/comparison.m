@@ -1,8 +1,13 @@
-addpath('../DeepLearnToolbox/util')
-addpath('../DeepLearnToolbox/NN')
-%clc
-%clear
+%
+% Compares results of own implementation with toolbox implementation
+%
 
+addpath('common')
+addpath('nn/own_implementation')
+addpath('DeepLearnToolbox/NN')
+
+clc
+clear
 
 ex_x = [1 1 1 2 1 3;
         1 0 1 1 0 1

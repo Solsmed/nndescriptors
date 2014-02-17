@@ -1,3 +1,5 @@
+% Illustration of cost function for siamese network
+
 Q = 256;
 
 t = 0;

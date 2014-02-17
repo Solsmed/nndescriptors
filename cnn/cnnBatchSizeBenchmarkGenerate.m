@@ -1,6 +1,12 @@
-addpath('../DeepLearnToolbox/data')
-addpath('../DeepLearnToolbox/CNN')
-addpath('../DeepLearnToolbox/util')
+%
+%   Code to generate performance data for (toolbox) CNN.
+%   Performace tests relation between batch size and learning speed.
+%   Outputs one mat file for each batchSize setting.
+%
+
+addpath('DeepLearnToolbox/data')
+addpath('DeepLearnToolbox/CNN')
+addpath('DeepLearnToolbox/util')
 
 load mnist_uint8
 
@@ -24,7 +30,7 @@ numOutputs = 10;
     
 numEpochs = 1;
 
-for batchSize = [8 12 32 48 80 125 200 300 400 600 800 1000] %[2 3 5 8 12 32 48 80 125 200 300 400 600 800 1000]
+for batchSize = [2 3 5 8 12 32 48 80 125 200 300 400 600 800 1000]
     numBatches = floor(numTrainingExamples / batchSize);
 
     numIterations = numEpochs * numBatches;

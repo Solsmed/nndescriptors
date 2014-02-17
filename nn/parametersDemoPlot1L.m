@@ -1,6 +1,6 @@
 %% ONE HIDDEN LAYER - Correctness, Efficiency
 %clear
-load('nn_1-100')
+load('results/nn_1-100')
 numTests = 1000;
 
 figure(1)
