@@ -27,14 +27,17 @@ ys = train_y(:,1:numTrainingExamples);
 t_xs = test_x(:,:,1:numTestingExamples);
 t_ys = test_y(:,1:numTestingExamples);
 numOutputs = 10;
-    
-numEpochs = 1;
+batchSizes = fliplr([2 3 5 8 12 20 32 52 84 125 200 300 450 700 1000]);
+batchSizes = batchSizes(1:5);% 6:10,11:12,13,14,15
 
-for batchSize = [2 3 5 8 12 32 48 80 125 200 300 400 600 800 1000]
+h = waitbar(0,'Initializing waitbar...');
+
+for bs = 1:length(batchSizes)
+    batchSize = batchSizes(bs);
     numBatches = floor(numTrainingExamples / batchSize);
-
+    numEpochs = ceil(batchSize / min(batchSizes));
+    
     numIterations = numEpochs * numBatches;
-
     hist_L = nan(numIterations,1);
     %hist_Ignd = nan(numIterations,numTestingExamples);
     hist_o = nan(numIterations,numOutputs,numTestingExamples);
@@ -52,6 +55,7 @@ for batchSize = [2 3 5 8 12 32 48 80 125 200 300 400 600 800 1000]
 
     for epoch = 1:numEpochs
         fprintf('%d/%d\n',epoch,numEpochs)
+        epochOrdering = randperm(60000);
         for batch = 1:numBatches
             fprintf('    %d/%d\n',batch,numBatches)
             iter = (epoch - 1) * numBatches + batch;
@@ -59,8 +63,8 @@ for batchSize = [2 3 5 8 12 32 48 80 125 200 300 400 600 800 1000]
             tic
 
             batchRange = (batch - 1) * batchSize + 1 : batch * batchSize;
-            xs_batch = xs(:,:,batchRange);
-            ys_batch = ys(:,  batchRange);
+            xs_batch = xs(:,:,epochOrdering(batchRange));
+            ys_batch = ys(:,  epochOrdering(batchRange));
 
             opts.alpha = 2;
             cnn = cnnff(cnn, xs_batch);
@@ -68,6 +72,14 @@ for batchSize = [2 3 5 8 12 32 48 80 125 200 300 400 600 800 1000]
             cnn = cnnapplygrads(cnn, opts);
 
             hist_time(iter) = toc;
+            
+            totalProgress = (batch + (epoch - 1) * numBatches + (bs - 1) * numBatches * numEpochs) / (length(batchSizes) * numEpochs * numBatches);
+            runtime = sum(hist_time(1:iter));
+            eta = runtime / totalProgress - runtime;
+            etaHours = floor(eta / 3600);
+            etaMinutes = floor((eta - 3600*etaHours) / 60);
+            etaSeconds = round(eta - 3600*etaHours - 60*etaMinutes);
+            waitbar(totalProgress,h,sprintf('%.2f%% computed.\nTime remaining: %dh%2dm%2ds.',100*totalProgress, etaHours, etaMinutes, etaSeconds))
             
             t_cnn = cnnff(cnn, t_xs);
             [~, Icnn] = max(t_cnn.o);
@@ -80,6 +92,7 @@ for batchSize = [2 3 5 8 12 32 48 80 125 200 300 400 600 800 1000]
                        
             subplot(1,2,1)
             plot(hist_L)
+            title(sprintf('Batch size: %d, Batch: %d/%d, Epoch: %d/%d',batchSize,batch,numBatches,epoch,numEpochs))
 
             subplot(1,2,2)
             imshow(confusionmat(Ignd,Icnn)/(length(Icnn)/10))
@@ -100,4 +113,5 @@ for batchSize = [2 3 5 8 12 32 48 80 125 200 300 400 600 800 1000]
     save(sprintf('training_%d.mat',batchSize), 'history');
 end
 %}
+close(h)
 
