@@ -28,14 +28,15 @@ t_xs = test_x(:,:,1:numTestingExamples);
 t_ys = test_y(:,1:numTestingExamples);
 numOutputs = 10;
 batchSizes = fliplr([2 3 5 8 12 20 32 52 84 125 200 300 450 700 1000]);
-batchSizes = batchSizes(1:5);% 6:10,11:12,13,14,15
+batchSizes = batchSizes([1 5 10 15]);% 1000 125 12 2
 
 h = waitbar(0,'Initializing waitbar...');
+runtime = 0;
 
 for bs = 1:length(batchSizes)
     batchSize = batchSizes(bs);
     numBatches = floor(numTrainingExamples / batchSize);
-    numEpochs = ceil(batchSize / min(batchSizes));
+    numEpochs = ceil(batchSize / 2);
     
     numIterations = numEpochs * numBatches;
     hist_L = nan(numIterations,1);
@@ -55,7 +56,7 @@ for bs = 1:length(batchSizes)
 
     for epoch = 1:numEpochs
         fprintf('%d/%d\n',epoch,numEpochs)
-        epochOrdering = randperm(60000);
+        epochOrdering = randperm(numTrainingExamples);
         for batch = 1:numBatches
             fprintf('    %d/%d\n',batch,numBatches)
             iter = (epoch - 1) * numBatches + batch;
@@ -74,7 +75,7 @@ for bs = 1:length(batchSizes)
             hist_time(iter) = toc;
             
             totalProgress = (batch + (epoch - 1) * numBatches + (bs - 1) * numBatches * numEpochs) / (length(batchSizes) * numEpochs * numBatches);
-            runtime = sum(hist_time(1:iter));
+            runtime = runtime + hist_time(iter);
             eta = runtime / totalProgress - runtime;
             etaHours = floor(eta / 3600);
             etaMinutes = floor((eta - 3600*etaHours) / 60);
